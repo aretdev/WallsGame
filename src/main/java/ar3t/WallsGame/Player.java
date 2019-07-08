@@ -1,22 +1,28 @@
 package ar3t.WallsGame;
 
-public class Player {
-	private static Vector2D position = new Vector2D(1, 1);
-	private static String name;
-	public static boolean dead = false;
+import java.io.Serializable;
+
+import ar3t.WallsGame.Utils.Vector2D;
+
+public class Player implements Serializable{
+
+	private static final long serialVersionUID = 4915398908648982525L;
+	private Vector2D position = new Vector2D(1, 1);
+	private String name = "";
+	public boolean dead = false;
 	
-	public static int bombs;
+	public int bombs;
 	
 	public Player(String name) {
 		this.name = name;
-		this.bombs = 0;}
+		bombs = 0;}
 	
 	public void setPos(Vector2D pos) {
-		this.position = pos;
+		position = pos;
 	}
 	
 	public Vector2D getPos() {
-		return this.position;
+		return position;
 	}
 	
 	public void setBomb(boolean option) {
@@ -24,6 +30,10 @@ public class Player {
 	}
 	public int getBomb() {
 		return this.bombs;
+	}
+	
+	public String getName() {
+		return this.name;
 	}
 	
 

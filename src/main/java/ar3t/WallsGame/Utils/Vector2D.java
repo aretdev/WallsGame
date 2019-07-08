@@ -1,6 +1,10 @@
-package ar3t.WallsGame;
+package ar3t.WallsGame.Utils;
 
-public class Vector2D {
+import java.io.Serializable;
+
+public class Vector2D implements Serializable {
+	
+	private static final long serialVersionUID = -2578427190216538450L;
 	private int x;
 	private int y;
 	

@@ -1,20 +1,29 @@
 package ar3t.WallsGame;
 
-import java.io.IOException;
+import java.io.Serializable;
 
-public class Map {
-	private static final int DIMENSIONX = 21;
-	private static final int DIMENSIONY = 11;
-	private static int[][] Mapa = new int[DIMENSIONY][DIMENSIONX];
+import ar3t.WallsGame.Utils.Vector2D;
+
+
+public class Map implements Serializable{
+
+	private static final long serialVersionUID = 1L;
+	public static final int DIMENSIONX = 31;
+	public static final int DIMENSIONY = 13;
+	
+	private int[][] Mapa = new int[DIMENSIONY][DIMENSIONX];
 	public String[][] MapaOverLay = new String[DIMENSIONY][DIMENSIONX];
-	private static final String[] MAPASSET_BASIC = {"⌂","▢","▩","B","P","","◉","▤"};
-
-	public static Vector2D Exit = new Vector2D(9, 19);
-	private static Player ply;
+	public static String[] MAPASSET_BASIC = {
+			"⌂","▢","▩","B","P","","◉","▤"
+			};
+	
+	private static Vector2D Exit = new Vector2D(11, 29);
+	private Player ply;
+	
+	private boolean bombIsActivated = false;
+	private int bombStepDelay = 4;
+	private Vector2D bombPos = null;
 		
-	public static boolean bombIsActivated = false;
-	public static int bombStepDelay = 4;
-	private static Vector2D bombPos = null;
 	/**
 	 *Crea aleatoriamente paredes y un overlay al mapa vacio
 	 *ofreciendo invisibilidad.
@@ -36,14 +45,13 @@ public class Map {
 	/*
 	 * Generación del mapa REAL aleatorio 
 	 */
-	private void GenerateRandomWallsMaps() {
+	private void GenerateRandomWallsMaps(){
+		RandMazeGen m = new RandMazeGen(); 
+		m.generate();
+		this.Mapa = m.getMaze();
 		for (int rows = 0; rows < Mapa.length; rows++) {
 			for (int columns = 0; columns < Mapa[0].length; columns++) {
 				MapaOverLay[rows][columns] = " ";
-				
-				RandomProbability rb = new RandomProbability();
-				Mapa[rows][columns] = rb.getData();
-				if(columns == 0  || columns == DIMENSIONX - 1 || rows == 0 || rows == DIMENSIONY -1 ) {Mapa[rows][columns] = 5;}
 			}
 		}
 	}
@@ -90,9 +98,9 @@ public class Map {
 	 */
 	public void activateBomb() {
 		ply.bombs--;
-		this.bombPos = this.ply.getPos();
-		updatePos(6, this.bombPos);
-		this.bombIsActivated = true;
+		bombPos = ply.getPos();
+		updatePos(6, bombPos);
+		bombIsActivated = true;
 	}
 	/*
 	 * Explosión de la bomba
@@ -104,7 +112,7 @@ public class Map {
 		updatePos(1, this.bombPos);
 		for (Vector2D pos : positionsToDestroy) {
 			if(getDataCell(pos) == 4) {
-				this.ply.dead = true;}
+				ply.dead = true;}
 			if(getDataCell(pos) != 0 && getDataCell(pos) != 5) {
 				int auxiliarBloq = (getDataCell(pos) == 2) ? 7 : 1;
 				updatePos(auxiliarBloq, pos);
@@ -116,5 +124,12 @@ public class Map {
 	 * Detecta si se ha ganado
 	 */
 	public boolean isWinner() {
-		return this.ply.getPos().equals(this.Exit);}	
+		return this.ply.getPos().equals(Exit);}	
+	
+	public boolean getBombAct() {
+		return this.bombIsActivated;
+	}
+	public int getBombStepLeft() {
+		return this.bombStepDelay;
+	}
 }
