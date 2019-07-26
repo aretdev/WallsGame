@@ -1,8 +1,11 @@
 package ar3t.WallsGame;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 import ar3t.WallsGame.GUIs.StartMenu;
 import ar3t.WallsGame.Utils.MapPlayerObj;
@@ -11,20 +14,30 @@ import ar3t.WallsGame.Utils.MapPlayerObj;
  * WallsGame v1.0
  * 
  * By : Aretdev
- *TODO Menu principal
- *TODO Generación de habitaciones
- *TODO Plantearse crear mapas más grandes , para nuevas estructuras
- *TODO Crear guardado y carga de partidas
- *TODO ¿Interfaz bonica?
- *TODO Nuevos items
- *
  */
 public class Main {
 
 	public static void main(String[] args) {
+		if(!new File("Data").exists()) {new File("Data").mkdir();}
+		if(!new File("Data/Scores").exists()) {
+			/*
+			 * En caso de que no se haya registrado ninguna partida
+			 * Deberemos crear unas stats a 0! de esta forma podrán 
+			 * empezar a sumarse nuevas partidas.
+			 */
+			new File("Data/Scores").mkdir();
+			Scores parentScore = new Scores();
+			try {
+				ObjectOutputStream statsFirstCreator = new ObjectOutputStream(new FileOutputStream("Data/Scores/Stats.data"));
+				statsFirstCreator.writeObject(parentScore);
+				statsFirstCreator.close();
+			}catch(IOException e) {
+				System.out.println("No se pudo inicializar el proceso de puntuación.");
+			}
+			
+		}
 		StartMenu q = new StartMenu();
 		q.initMenu();
-		
 		if(q.getOpt() == 1) {
 			try {
 				

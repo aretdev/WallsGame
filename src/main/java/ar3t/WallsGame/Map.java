@@ -2,6 +2,7 @@ package ar3t.WallsGame;
 
 import java.io.Serializable;
 
+import ar3t.WallsGame.Objects.Bomb;
 import ar3t.WallsGame.Utils.Vector2D;
 
 
@@ -19,10 +20,8 @@ public class Map implements Serializable{
 	
 	private static Vector2D Exit = new Vector2D(11, 29);
 	private Player ply;
-	
-	private boolean bombIsActivated = false;
-	private int bombStepDelay = 4;
-	private Vector2D bombPos = null;
+	private Bomb bomb = null;
+
 		
 	/**
 	 *Crea aleatoriamente paredes y un overlay al mapa vacio
@@ -66,9 +65,7 @@ public class Map implements Serializable{
 			//Actualizamos - >
 			ply.setPos(pos);
 			updatePos(typeAsset, ply.getPos());
-			//Detección de la activación de la bomba - >
-			this.bombStepDelay = (this.bombIsActivated) ? --this.bombStepDelay : 4;
-			if(this.bombStepDelay == 0) {exploteBomb();}
+			
 		}else{
 			MapaOverLay[pos.getX()][pos.getY()] = MAPASSET_BASIC[getDataCell(pos)];
 		}
@@ -97,19 +94,20 @@ public class Map implements Serializable{
 	 * Empieza la ejecución del estado de la bomba
 	 */
 	public void activateBomb() {
-		ply.bombs--;
-		bombPos = ply.getPos();
-		updatePos(6, bombPos);
-		bombIsActivated = true;
+		this.ply.getBomb().setBombStatus(true);
+		this.bomb = this.ply.getBomb();
+		this.bomb.setPos(ply.getPos());
+		updatePos(6, this.bomb.getPos());
+		this.ply.decreaseBombSize();
 	}
 	/*
 	 * Explosión de la bomba
 	 */
-	private void exploteBomb() {
-		int x = this.bombPos.getX();
-		int y = this.bombPos.getY();
+	public void exploteBomb() {
+		int x = this.bomb.getPos().getX();
+		int y = this.bomb.getPos().getY();
 		Vector2D[] positionsToDestroy = { new Vector2D(x + 1, y), new Vector2D(x - 1, y), new Vector2D(x, y + 1), new Vector2D(x, y - 1) };
-		updatePos(1, this.bombPos);
+		updatePos(1, this.bomb.getPos());
 		for (Vector2D pos : positionsToDestroy) {
 			if(getDataCell(pos) == 4) {
 				ply.dead = true;}
@@ -118,18 +116,15 @@ public class Map implements Serializable{
 				updatePos(auxiliarBloq, pos);
 			}
 		}
-		this.bombIsActivated = false;
+		this.bomb.setBombStatus(false);
+		this.bomb = null;
 	}
 	/*
 	 * Detecta si se ha ganado
 	 */
 	public boolean isWinner() {
-		return this.ply.getPos().equals(Exit);}	
-	
-	public boolean getBombAct() {
-		return this.bombIsActivated;
-	}
-	public int getBombStepLeft() {
-		return this.bombStepDelay;
+		return this.ply.getPos().equals(Exit);}
+	public Bomb getPlacedBomb() {
+		return this.bomb;
 	}
 }

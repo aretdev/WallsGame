@@ -50,7 +50,7 @@ public class GameWindows {
 			}
 		}
 		System.out.println("╠════════════════════════════╦═════════════════════════════╣");
-		System.out.println("║" + StringText.alignText("w↑ a← s↓ d→ t(◉)", widthCorrector / 2) + "║" + StringText.alignText("◉ : " + player.getBomb(), widthCorrector / 2) + "║");
+		System.out.println("║" + StringText.alignText("w↑ a← s↓ d→ t(◉) g(✐) ", widthCorrector / 2) + "║" + StringText.alignText("◉ : " + player.getBombSize(), widthCorrector / 2) + "║");
 		System.out.println("╠════════════════════════════╩═════════════════════════════╣");
 		System.out.println("║" + StringText.alignText("", widthCorrector) + "║");
 		System.out.println("║" + StringText.alignText(Message, widthCorrector) + "║");
